@@ -1,0 +1,18 @@
+# Member-Service/application.properties
+/Member-Service/src/main/resources/application.yml
+/Member-Service/src/main/resources/application-oauth.properties
+
+# Survey-Service/application.properties
+/Survey-Service/src/main/resources/application.yml
+/Survey-Service/src/main/resources/application-oauth.properties
+
+# Answer-Service/application.properties
+/Answer-Service/src/main/resources/application.yml
+/Answer-Service/src/main/resources/application-oauth.properties
+
+# Gateway/application.properties
+/Gateway/src/main/resources/application.yml
+/Gateway/src/main/resources/application-oauth.properties
+
+# Eureka-Server/application.properties
+/Eureka/src/main/resources/application.yml

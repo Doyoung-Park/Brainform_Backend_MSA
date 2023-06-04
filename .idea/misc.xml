@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/Answer-Controller" />
+    <file type="web" url="file://$PROJECT_DIR$/Answer-Service" />
+    <file type="web" url="file://$PROJECT_DIR$/Eureka" />
+    <file type="web" url="file://$PROJECT_DIR$/Gateway" />
+    <file type="web" url="file://$PROJECT_DIR$/Member-Service" />
+    <file type="web" url="file://$PROJECT_DIR$/Service-Service" />
+    <file type="web" url="file://$PROJECT_DIR$/Survey-Service" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="17" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="jpab" />
+  </component>
+</project>
