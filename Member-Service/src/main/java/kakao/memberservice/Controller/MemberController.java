@@ -3,14 +3,14 @@ package kakao.memberservice.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import kakao.memberservice.dto.MemberRegisterDTO;
-import kakao.memberservice.dto.TokenDTO;
-import kakao.memberservice.entity.BrainData;
-import kakao.memberservice.entity.BrainMemberInfo;
-import kakao.memberservice.entity.Member;
-import kakao.memberservice.repository.BrainWaveCodeRepository;
-import kakao.memberservice.repository.MemberRepository;
-import kakao.memberservice.service.MemberService;
+import kakao.memberservice.global.dto.MemberRegisterDTO;
+import kakao.memberservice.global.dto.TokenDTO;
+import kakao.memberservice.global.entity.BrainData;
+import kakao.memberservice.global.entity.BrainMemberInfo;
+import kakao.memberservice.global.entity.Member;
+import kakao.memberservice.global.repository.BrainWaveCodeRepository;
+import kakao.memberservice.global.repository.MemberRepository;
+import kakao.memberservice.global.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,6 @@ public class MemberController {
 
 
     private final MemberRepository memberRepository;
-
     private final MemberService memberService;
     private final BrainWaveCodeRepository brainWaveCodeRepository;
 

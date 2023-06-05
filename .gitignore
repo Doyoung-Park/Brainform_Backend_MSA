@@ -14,5 +14,9 @@
 /Gateway/src/main/resources/application.yml
 /Gateway/src/main/resources/application-oauth.properties
 
+# Gateway/application.properties
+/Read-Service/src/main/resources/application.yml
+/Read-Service/src/main/resources/application-oauth.properties
+
 # Eureka-Server/application.properties
 /Eureka/src/main/resources/application.yml

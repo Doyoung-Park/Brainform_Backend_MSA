@@ -40,6 +40,15 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Read-Service" />
+        <option name="gradleJvm" value="openjdk-18" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Read-Service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/Survey-Service" />
         <option name="gradleJvm" value="openjdk-18" />
         <option name="modules">
