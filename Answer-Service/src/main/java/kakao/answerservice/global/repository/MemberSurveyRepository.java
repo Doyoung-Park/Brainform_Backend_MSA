@@ -1,4 +1,4 @@
-package kakao.answerservice.global.repository;//package kakao.memberservice.repository;
+package kakao.answerservice.global.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -35,11 +35,13 @@ public class MemberSurveyRepository {
         BooleanExpression genderExpression = genderEq(filterDTO.getGenders());
         BooleanExpression ageExpression = ageEq(filterDTO.getAges());
         BooleanExpression jobExpression = jobEq(filterDTO.getOccupations());
+        BooleanExpression attExpression = applyAtt(filterDTO.getIsActive());
+        BooleanExpression meditExpression = applyMedit(filterDTO.getIsActive());
 
         return query
                 .select(memberSurvey)
                 .from(memberSurvey)
-                .where(surveyExpression,genderExpression, ageExpression, jobExpression)
+                .where(surveyExpression,genderExpression, ageExpression, jobExpression, attExpression, meditExpression)
                 .fetch();
     }
 
@@ -47,6 +49,7 @@ public class MemberSurveyRepository {
         em.persist(memberSurvey);
         return memberSurvey;
     }
+
 
     private BooleanExpression surveyEq(Long surveyId) {
         if (surveyId == null) {
@@ -68,6 +71,20 @@ public class MemberSurveyRepository {
         return memberSurvey.member.age.in(ages);
     }
 
+    private BooleanExpression applyAtt(String activate) {
+        if (activate == null || activate.isEmpty()) {
+            return null;
+        }
+        return memberSurvey.brainwaveResult.attAvg.goe(60.0);
+    }
+
+    private BooleanExpression applyMedit(String activate) {
+        if (activate == null || activate.isEmpty()) {
+            return null;
+        }
+        return memberSurvey.brainwaveResult.meditAvg.goe(60.0);
+    }
+
     private BooleanExpression jobEq(List<String> jobs) {
         if (jobs == null || jobs.isEmpty()) {
             return null;
@@ -81,6 +98,14 @@ public class MemberSurveyRepository {
                 .from(memberSurvey)
                 .where(memberSurvey.member.id.eq(id))
                 .fetch();
+    }
+
+    public MemberSurvey findMemberSurveyBySurveyIdAndMemberID(Long surveyId, Long memberId) {
+        return query
+                .select(memberSurvey)
+                .from(memberSurvey)
+                .where(memberSurvey.survey.id.eq(surveyId).and(memberSurvey.member.id.eq(memberId)))
+                .fetchOne();
     }
 
     public void deleteMemberSurvey(MemberSurvey memberSurvey) {

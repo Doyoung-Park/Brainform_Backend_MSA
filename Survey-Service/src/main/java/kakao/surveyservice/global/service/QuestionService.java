@@ -47,6 +47,8 @@ public class QuestionService {
         survey.setIsBrainwave(obj.getWearable());
         survey.setTitle(obj.getTitle());
         survey.setMember(member);
+        survey.setStartDate(obj.getStartDate());
+        survey.setEndDate(obj.getEndDate());
 
         return surveyRepository.save(survey);
     }
@@ -61,6 +63,9 @@ public class QuestionService {
         survey.setIsOpen(obj.getVisibility());
         survey.setIsBrainwave(obj.getWearable());
         survey.setTitle(obj.getTitle());
+        survey.setStartDate(obj.getStartDate());
+        survey.setEndDate(obj.getEndDate());
+
         survey.setMember(member);
 
         return surveyRepository.save(survey);
@@ -170,7 +175,7 @@ public class QuestionService {
                     MultipleChoiceQuestion mcq = multipleChoiceQuestionRepository.findById(input.getId())
                             .orElseThrow(() -> new IllegalArgumentException("Question not found"));
                     mcq.setSurvey(survey);
-                   // mcq.setNum((input.getId().intValue()));
+                    // mcq.setNum((input.getId().intValue()));
                     mcq.setTitle(input.getTitle());
 
                     List<Object> options = input.getOptions();
@@ -178,7 +183,7 @@ public class QuestionService {
 
                     for (int j = 0; j < options.size() && j < 5; j++) {
                         texts[j] = ((Map<String, String>) ((List<?>) options).get(j)).get("text");
-                       ;
+                        ;
                     }
                     mcq.setChoice(texts[0], texts[1], texts[2], texts[3], texts[4]);
                     mcq.setCount(options.size());
@@ -254,7 +259,7 @@ public class QuestionService {
             return findSurvey.get();
         }
         return null;
-}
+    }
 
     public List<Survey> findAllSurveyIMade(Member member) {
         List<Survey> allSurveyByMember = surveyRepository.findAllByMember(member);
@@ -272,7 +277,7 @@ public class QuestionService {
         if (!survey.isPresent()) {
             // 에러 처리
         }
-                return survey.get();
+        return survey.get();
 
 //        Survey survey = surveyRepository.findSurveyById(surveyId);
 //        return survey;

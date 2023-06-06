@@ -30,7 +30,7 @@ public class SubjectiveQuestion {
     @JoinColumn(name = "survey_id")
     private Survey survey;
 
-    @OneToMany(mappedBy = "subjectiveQuestion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "subjectiveQuestion", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<SubjectiveAnswer> subjectiveAnswers;
 

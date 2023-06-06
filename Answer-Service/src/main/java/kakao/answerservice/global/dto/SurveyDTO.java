@@ -1,4 +1,5 @@
-package kakao.answerservice.global.dto;//package kakao.memberservice.dto;
+package kakao.answerservice.global.dto;
+
 import kakao.answerservice.global.entity.Member;
 import kakao.answerservice.global.entity.MemberSurvey;
 import kakao.answerservice.global.entity.Survey;
@@ -36,6 +37,10 @@ public class SurveyDTO {
 
     private Date updatedAt;
 
+    private Date endDate;
+
+    private Date startDate;
+
     private Member member;
 
     private List<YesOrNoQuestion> yesOrNoQuestions;
@@ -55,6 +60,8 @@ public class SurveyDTO {
         this.yesOrNoQuestions = survey.getYesOrNoQuestions();
         this.multipleChoiceQuestions = survey.getMultipleChoiceQuestions();
         this.subjectiveQuestions = survey.getSubjectiveQuestions();
+        this.startDate=survey.getStartDate();
+        this.endDate=survey.getEndDate();
 
         return this;
     }

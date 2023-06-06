@@ -41,7 +41,7 @@ public class MultipleChoiceQuestion {
     @JoinColumn(name = "survey_id")
     private Survey survey;
 
-    @OneToMany(mappedBy = "multipleChoiceQuestion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "multipleChoiceQuestion", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<MultipleChoiceAnswer> multipleChoiceAnswers;
 

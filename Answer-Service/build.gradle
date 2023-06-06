@@ -58,6 +58,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	//WebSocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 	//jwt
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'

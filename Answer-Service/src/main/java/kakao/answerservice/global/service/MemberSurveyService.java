@@ -52,7 +52,7 @@ public class MemberSurveyService {
 
         log.info("필터링 진행");
         List<MemberSurvey> memberSurveyFilter = memberSurveyRepository.getMemberSurveyFilter(filterDTO);
-        log.info("필터링 길이={}",memberSurveyFilter.get(0).getMember().getUsername());
+        //log.info("필터링 길이={}",memberSurveyFilter.get(0).getMember().getUsername());
 
         AnswerDTO answerDTO = new AnswerDTO();
         for (MemberSurvey memberSurvey : memberSurveyFilter) {

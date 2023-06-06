@@ -30,7 +30,7 @@ public class YesOrNoQuestion {
     @JoinColumn(name = "survey_id")
     private Survey survey;
 
-    @OneToMany(mappedBy = "yesOrNoQuestion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "yesOrNoQuestion", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<YesOrNoAnswer> yesOrNoAnswer;
 

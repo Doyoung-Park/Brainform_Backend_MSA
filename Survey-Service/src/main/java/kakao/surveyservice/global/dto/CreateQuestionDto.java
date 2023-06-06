@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -20,7 +21,11 @@ public class CreateQuestionDto{
     @NotNull
     private List<CreateQuestionInput> questionList;
 
+    @NotNull
+    private Date startDate;
 
+    @NotNull
+    private Date endDate;
 
     @NotNull
     private String visibility;

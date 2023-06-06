@@ -3,17 +3,22 @@ package kakao.readservice.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import kakao.readservice.global.dto.FilterDTO;
 import kakao.readservice.global.dto.MemberRegisterDTO;
 import kakao.readservice.global.dto.TokenDTO;
 import kakao.readservice.global.entity.BrainData;
 import kakao.readservice.global.entity.BrainMemberInfo;
 import kakao.readservice.global.entity.Member;
+import kakao.readservice.global.entity.Survey;
 import kakao.readservice.global.repository.BrainWaveCodeRepository;
 import kakao.readservice.global.repository.MemberRepository;
 import kakao.readservice.global.service.MemberService;
+import kakao.readservice.global.service.MemberSurveyService;
+import kakao.readservice.global.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,20 +35,22 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/member")
+@RequestMapping("/api/read")
 public class ReadController {
 
 
     private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final BrainWaveCodeRepository brainWaveCodeRepository;
-
-    private final ObjectMapper objectMapper;
+    private final QuestionService questionService;
+    private final ObjectMapper mapper;
+    private final MemberSurveyService memberSurveyService;
 
     // === 테스트용 ===
     @GetMapping("/test")
@@ -61,46 +68,20 @@ public class ReadController {
     // === 테스트용 ===
 
 
-    @SneakyThrows
-    @PostMapping("/api/register")
-    public ResponseEntity<?> register(@RequestBody @Validated MemberRegisterDTO dto,
-                                      Authentication authentication,
-                                      BindingResult bindingResult) {
+    /**
+     * 뇌파를 측정하면서 설문 응답중인지 체크
+     * @param code: 뇌파 측정 코드
+     * @return 뇌파 측정 코드, Survey ID, Member ID, flag
+     */
+    @GetMapping("/answer/userInfo/{code}") // C# 에서 응답 전에 flag값 확인하는 요청
+    public BrainMemberInfo sendMemberInfo(@PathVariable(name = "code") String code) {
 
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>("값을 모두 입력해주세요", HttpStatus.BAD_REQUEST);
-        }
+        BrainMemberInfo brainMemberInfo = brainWaveCodeRepository.findByCode(code).get();
 
-        TokenDTO token = memberService.join(dto, authentication);
-
-        return new ResponseEntity<>(token.getAccessToken(), HttpStatus.OK);
+        return brainMemberInfo;
     }
 
-    @PatchMapping("/api/patchmember")
-    public ResponseEntity<?> updateMember(@RequestBody @Validated MemberRegisterDTO dto,
-                                          Authentication authentication,
-                                          BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>("값을 모두 입력해주세요", HttpStatus.BAD_REQUEST);
-        }
-
-        try {
-            Member updatedMember = memberService.update(dto, authentication);
-
-            if (updatedMember != null) {
-                return new ResponseEntity<>(updatedMember, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("회원 정보 수정 실패", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-
-        } catch (Exception e) {
-            return new ResponseEntity<>("서버 에러", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-    @GetMapping("/api/members")
+    @GetMapping("/member/") // 내 정보 조회
     public Member getMember(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Map<String, Object> data = new HashMap<String, Object>();
@@ -110,98 +91,62 @@ public class ReadController {
         return member;
     }
 
+    // survey_id에 해당하는 설문지의 질문들 가져오는 컨트롤러
+    @GetMapping("/survey/question/{survey_id}") // 해당 설문지의 질문들 조회
+    public Survey findQuestionById(@PathVariable("survey_id") Long survey_id) {
+        Survey responseSurvey = questionService.findQuestionById(survey_id);
+        return responseSurvey;
+//        if (!responseSurvey.equals(null)) {
+//            return new ResponseEntity<>(responseSurvey, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>("Question not found", HttpStatus.NOT_FOUND);
+//        }
+    }
 
-    /*
-     * 설문 응답하기 전에 입력할 코드 세션에 저장
-     * */
-    @PostMapping("/api/{id}/{code}")
-    public ResponseEntity<?> getBrainCode(@PathVariable(name = "code") String code,
-                                          @PathVariable(name = "id") Long surveyId,
-                                          Authentication authentication) {
 
-        //JWT 토큰에서 저장되어있는 유저 정보 가져오기
+    @GetMapping("/survey/created")    //  생성한 설문지 조회
+    public List<Survey> surveyManagement(Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
+        List<Survey> allQuestionIMade = questionService.findAllSurveyIMade(member);
 
-
-        BrainMemberInfo brainMemberInfo = BrainMemberInfo.builder()
-                .code(code)
-                .surveyId(surveyId)
-                .memberId(member.getId())
-                .flag(true)
-                .build();
-
-        brainWaveCodeRepository.save(brainMemberInfo);
-
-        return new ResponseEntity<>("설문을 시작해주세요", HttpStatus.OK);
+        return allQuestionIMade;
     }
 
-    @GetMapping("/api/userInfo/{code}")
-    public BrainMemberInfo sendMemberInfo(@PathVariable(name = "code") String code,
-                                          HttpServletRequest request) throws JsonProcessingException {
 
-        //log.info(code);
-        BrainMemberInfo brainMemberInfo = brainWaveCodeRepository.findByCode(code);
-        String s = objectMapper.writeValueAsString(brainMemberInfo);
-        //log.info(s);
-
-        return brainMemberInfo;
-    }
-
-    @PostMapping("api/{id}/{code}/stop")
-    public ResponseEntity<?> stopBrain(@PathVariable(name = "code") String code,
-                                       @PathVariable(name = "id") Long surveyId,
-                                       Authentication authentication,
-                                       HttpServletRequest request) {
-
-        //JWT 토큰에서 저장되어있는 유저 정보 가져오기
+    @GetMapping("/survey/answered")   // 응답한 설문지 조회
+    public List<Survey> ManagementAnsweredSurveyList(Authentication authentication) {
         Member member = (Member) authentication.getPrincipal();
+        List<Survey> allSurveyIAnswered = questionService.findAllSurveyIAnswered(member);
 
-
-        BrainMemberInfo brainMemberInfo = BrainMemberInfo.builder()
-                .code(code)
-                .surveyId(surveyId)
-                .memberId(member.getId())
-                .flag(false)
-                .build();
-
-        brainWaveCodeRepository.save(brainMemberInfo);
-
-        return new ResponseEntity<>("설문 종료", HttpStatus.OK);
+        return allSurveyIAnswered;
     }
 
-    @PostMapping("api/imgInfo")
-    public BrainData postBrainData(@RequestParam("braindata") String brainData,
-                                   @RequestParam("image") MultipartFile image) throws IOException {
+    @GetMapping("/survey/result/{surveyId}")
+    public Survey surveyStatistic(@PathVariable("surveyId") Long surveyId) {
 
-        System.out.printf("요청 받음" + brainData);
-        // byte 배열로 이미지 데이터 변환
-        byte[] imageData = image.getBytes();
-        BrainData brainDataObj = new ObjectMapper().readValue(brainData, BrainData.class);
+//        Member member = (Member) authentication.getPrincipal();
+        System.out.println("surveyId = " + surveyId);
+        Survey questionOfSurvey = questionService.getSurveyStatistic(surveyId);
 
-        // BrainData 객체의 필드 값을 추출하여 변수에 저장
-        String memberID = brainDataObj.getMemberId();
-        String surveyId = brainDataObj.getSurveyId();
-        double avgAtt = brainDataObj.getAvgAtt();
-        double avgMed = brainDataObj.getAvgMed();
+        return questionOfSurvey;
+    }
 
-        // BrainData 객체 생성
-        BrainData newBrainDataObj = BrainData.builder()
-                .memberId(memberID)
-                .surveyId(surveyId)
-                .image(imageData)
-                .avgAtt(avgAtt)
-                .avgMed(avgMed)
-                .build();
+    @GetMapping("/survey/filter")
+    public Survey GetSurveyDataWithFilter(
+            @RequestParam(value = "id", required = true) String surveyId,
+            @RequestParam(value = "gender", required = false) List<String> genders,
+            @RequestParam(value = "age", required = false) List<String> ages,
+            @RequestParam(value = "job", required = false) List<String> jobs,
+            @RequestParam(value = "isActive", required = false) String active) throws ChangeSetPersister.NotFoundException, JsonProcessingException {
 
-        byte[] img = newBrainDataObj.getImage();
-        String filename = "C:\\Users\\USER\\Desktop\\" + memberID + "_" + surveyId + ".png";
-        // 바이트 배열로부터 BufferedImage 객체 생성
-        InputStream in = new ByteArrayInputStream(img);
-        BufferedImage bufferedImage = ImageIO.read(in);
 
-        // BufferedImage 객체를 PNG 파일로 저장
-        File outputfile = new File(filename);
-        ImageIO.write(bufferedImage, "png", outputfile);
-        return newBrainDataObj;
+        log.info("filter요청 들어옴");
+        log.info("활성화 요청 파라미터={}", active);
+        FilterDTO filterDTO = new FilterDTO(Long.parseLong(surveyId), genders, ages, jobs, active);
+        log.info(mapper.writeValueAsString(filterDTO));
+        Survey dataWithFilter = memberSurveyService.getDataWithFilter(filterDTO);
+        log.info("resposne={}", mapper.writeValueAsString(dataWithFilter));
+
+        return dataWithFilter;
     }
 }

@@ -47,6 +47,8 @@ public class QuestionService {
         survey.setIsBrainwave(obj.getWearable());
         survey.setTitle(obj.getTitle());
         survey.setMember(member);
+        survey.setStartDate(obj.getStartDate());
+        survey.setEndDate(obj.getEndDate());
 
         return surveyRepository.save(survey);
     }
@@ -61,6 +63,9 @@ public class QuestionService {
         survey.setIsOpen(obj.getVisibility());
         survey.setIsBrainwave(obj.getWearable());
         survey.setTitle(obj.getTitle());
+        survey.setStartDate(obj.getStartDate());
+        survey.setEndDate(obj.getEndDate());
+
         survey.setMember(member);
 
         return surveyRepository.save(survey);

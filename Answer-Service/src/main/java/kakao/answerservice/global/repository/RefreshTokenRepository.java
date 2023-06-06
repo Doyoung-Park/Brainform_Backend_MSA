@@ -1,6 +1,5 @@
 package kakao.answerservice.global.repository;
 
-
 import kakao.answerservice.global.dto.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

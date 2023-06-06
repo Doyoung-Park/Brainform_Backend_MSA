@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class BrainWaveCodeRepository {
         return brainMemberInfo;
     }
 
-    public BrainMemberInfo findByCode(String code) {
-        return map.get(code);
+    public Optional<BrainMemberInfo> findByCode(String code) {
+        return Optional.ofNullable(map.get(code));
     }
 }

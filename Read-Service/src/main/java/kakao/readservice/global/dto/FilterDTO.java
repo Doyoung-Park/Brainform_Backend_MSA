@@ -17,4 +17,6 @@ public class FilterDTO {
     private List<String> genders;
     private List<String> ages;
     private List<String> occupations;
+    private String isActive;
 }
+

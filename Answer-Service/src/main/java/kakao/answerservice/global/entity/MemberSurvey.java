@@ -43,7 +43,8 @@ public class MemberSurvey {
     @JoinColumn(name = "survey_id")
     private Survey survey;
 
-    @OneToOne(mappedBy = "memberSurvey", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "result_id")
     private BrainwaveResult brainwaveResult;
 
     @JsonIgnore
@@ -57,4 +58,9 @@ public class MemberSurvey {
     @JsonIgnore
     @OneToMany(mappedBy = "memberSurvey", fetch = FetchType.LAZY)
     private List<YesOrNoAnswer> yesOrNoAnswers;
+
+    public MemberSurvey setBrainWaveData(BrainwaveResult result) {
+        this.brainwaveResult = result;
+        return this;
+    }
 }

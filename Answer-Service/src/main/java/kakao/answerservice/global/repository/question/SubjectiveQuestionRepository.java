@@ -1,6 +1,5 @@
 package kakao.answerservice.global.repository.question;
 
-
 import kakao.answerservice.global.entity.question.SubjectiveQuestion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

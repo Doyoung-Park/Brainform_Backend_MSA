@@ -1,9 +1,5 @@
-package kakao.answerservice.global.dto;//package kakao.memberservice.dto;
+package kakao.answerservice.global.dto;
 
-//import kakao99.brainform.entity.anwer.MultipleChoiceAnswer;
-//import kakao99.brainform.entity.anwer.SubjectiveAnswer;
-//import kakao99.brainform.entity.anwer.YesOrNoAnswer;
-//import kakao99.brainform.entity.question.MultipleChoiceQuestion;
 import kakao.answerservice.global.entity.anwer.MultipleChoiceAnswer;
 import kakao.answerservice.global.entity.anwer.SubjectiveAnswer;
 import kakao.answerservice.global.entity.anwer.YesOrNoAnswer;

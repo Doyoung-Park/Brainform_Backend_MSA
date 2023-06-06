@@ -49,25 +49,30 @@ public class Survey {
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     private Date updatedAt;
+    @Column(name = "startDate", nullable = false)
+    private Date startDate;
+    @Column(name = "endDate", nullable = false)
+    private Date endDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "surveyor_id")
     private Member member;
 
-    @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonBackReference
     @JsonIgnore
     private List<MemberSurvey> memberSurveys;
 
-    @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<YesOrNoQuestion> yesOrNoQuestions;
 
-    @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<MultipleChoiceQuestion> multipleChoiceQuestions;
 
-    @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "survey", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<SubjectiveQuestion> subjectiveQuestions;
 
